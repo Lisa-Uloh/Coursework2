@@ -74,7 +74,7 @@ return false;
                         
                         <div class="row">
                             <div class="col-sm-6 col-lg-6 col-md-6 col-6">
-                                <div class="form-check">
+                                <!-- <div class="form-check">
                                     <label><input type="radio" v-model="filterType" value="subject"> Name</label>
                                   </div>
                                   <div class="form-check">
@@ -82,14 +82,21 @@ return false;
                                   </div>
                                   <div class="form-check">
                                     <label><input type="radio" v-model="filterType" value="location"> Location</label>
-                                  </div>
+                                  </div> -->
+                                  <select name="sort" v-model="filterType">
+                                    <option>--Sort By--</option>
+                                    <option value="subject">Title</option>
+                                    <option value="price">Price</option>
+                                    <option value="location">Location</option>
+                                    <option value="availablespace">Spaces</option>
+                                </select>
                             </div>
                             <div class="col-sm-6 col-lg-6 col-md-6 col-6">
                           <div class="form-check">
-                            <label><input type="radio" v-model="sortOrder" value="asc"> Ascending</label>
+                            <label><input type="radio" v-model="sortOrder" value="Ascending" id="ascending"> Ascending</label>
                           </div>
                           <div class="form-check">
-                            <label><input type="radio" v-model="sortOrder" value="desc"> Descending</label>
+                            <label><input type="radio" v-model="sortOrder" value="Descending" id="descending"> Descending</label>
                           </div>
                             </div>
                         </div>
@@ -400,47 +407,50 @@ return false;
                                 console.log(err);
                             });
                          },
-            //              sortedItems() {
-            //      // create a copy of the original array
-            //      let filtered = this.data
-            //     //  const filterInput = this.searchInput.toLowerCase();
-            //      filtered = filtered.filter((courses) => {
-                          
-            //             return courses.subject.toLowerCase().match(this.searchInput.toLowerCase()) || courses.location.toLowerCase().match(this.searchInput.toLowerCase())
-                        
-            //         }) 
+           
+                         sortPrice: function(priceArray){
+                        function compare(a,b) {
+                            if (a.price > b.price)
+                                return 1;
+                            if (a.price < b.price)
+                                return -1;
+                            return 0;
+                        }
+                        return priceArray.sort(compare);
+                    },
 
-            //      if (this.filterType === 'subject') {
-            //         filtered = filtered.filter(course => {
-            //             return course.subject.toLowerCase().includes(this.searchInput.toLowerCase())
-            //         })
-            //     } 
-            //     else if (this.filterType === 'price') {
-            //         filtered = filtered.filter(course => {
-            //             return course.price.toString().includes(this.searchInput)
-            //         })
-            //     } 
-            //     else if (this.filterType === 'location') {
-            //         filtered = filtered.filter(course => {
-            //             return course.location.toLowerCase().includes(this.searchInput.toLowerCase())
-            //         })
-            //     }
-            //     if (this.sortOrder === 'asc') {
-            //     filtered.sort((a, b) => {
-            //         if (a[this.filterType] < b[this.filterType]) return -1
-            //         if (a[this.filterType] > b[this.filterType]) return 1
-            //         return 0
-            //     })
-            //     } else if (this.sortOrder === 'desc') {
-            //     filtered.sort((a, b) => {
-            //         if (a[this.filterType] > b[this.filterType]) return -1
-            //         if (a[this.filterType] < b[this.filterType]) return 1
-            //         return 0
-            //     })
-            //     }
-            //     return filtered
-            // }
-            
+                    sortLocation: function(locationArray){
+                        function compare(a,b) {
+                            if (a.location > b.location)
+                                return 1;
+                            if (a.location < b.location)
+                                return -1;
+                            return 0;
+                        }
+                        return locationArray.sort(compare);
+                        
+                    },
+                    sortTitle: function(titleArray){
+                        function compare(a,b) {
+                            if (a.subject > b.subject)
+                                return 1;
+                            if (a.subject < b.subject)
+                                return -1;
+                            return 0;
+                        }
+                        return titleArray.sort(compare);
+                        
+                    },
+                    sortSpaces: function(spacesArray){
+                        function compare(a,b) {
+                            if (a.noOfSpaces > b.noOfSpaces)
+                                return 1;
+                            if (a.noOfSpaces < b.noOfSpaces)
+                                return -1;
+                            return 0;
+                        }
+                        return spacesArray.sort(compare);                
+                    },
             filterSessions: function() {
                         let lessonses = this.data
                  
@@ -450,16 +460,16 @@ return false;
                             
                         }) 
 
-                        if (this.sort == 'price') {
+                        if (this.filterType === 'price') {
                             lessonses = this.sortPrice(lessonses)
                         }
-                        else if (this.sort =='title') {
+                        else if (this.filterType ==='subject') {
                             lessonses = this.sortTitle(lessonses)
                         }
-                        else if (this.sort =='location') {
+                        else if (this.filterType ==='location') {
                             lessonses = this.sortLocation(lessonses)
                         }
-                        else if (this.sort =='availablespace') {
+                        else if (this.filterType ==='availablespace') {
                             lessonses = this.sortSpaces(lessonses)
                         }
 
