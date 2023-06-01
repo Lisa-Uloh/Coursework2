@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>School Activities</title>
+    <title>School Extra Activities</title>
     <link rel="stylesheet" href="css/index2.css">
     <script src="https://cdn.jsdelivr.net/npm/vue@2.7.8/dist/vue.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin="anonymous">
@@ -106,7 +106,7 @@ return false;
                         
                         <div class="row wrapper">  
                               
-                            <div class="col-lg-4 col-md-6 col-sm-6 col-12 box" v-for="courses in filterSessions() " :key="index" >
+                            <div class="col-lg-4 col-md-6 col-sm-6 col-12 box" v-for="courses in filterSessions()">
                                <div class="card my-3 product">
                                   <div class="card-image">
                                    <div class="wrap">
@@ -196,7 +196,7 @@ return false;
                                         <span class="text-muted">Billing Address</span>
                                         <span class="badge badge-secondary badge-pill">3</span>
                                     </h4>
-                                    <form class="needs-validation" novalidate>
+                                    <!-- <form class="needs-validation" novalidate> -->
                                         <ul class="list-group mb-3">
                                             <label for="firstName">Full name</label>
                                             <li class="list-group-item d-flex justify-content-between lh-condensed">
@@ -218,12 +218,11 @@ return false;
                                         <button v-if="!isValid" class="btn btn-primary btn-lg btn-block"disabled type="submit">Continue to checkout</button>
                                         <button v-else class="btn btn-primary btn-lg btn-block" v-on:click="submitForm" type="submit">Continue to checkout</button>
                                         
-                                    </form>
+                                    <!-- </form> -->
                                 </div>
                             </div>
                         </div>
                       
-
                     <div class="row">
                         <div class="col-md-8 order-md-2 mb-4">
                             <h4 class="d-flex justify-content-between align-items-center mb-3">
@@ -257,7 +256,6 @@ return false;
           </div>
     </div>
 <script type="text/javascript">
-    
     const school = new Vue({
         el: '#app',
         created:()=>{
@@ -352,72 +350,73 @@ return false;
                 }
             },
             submitForm(){
-                            alert('Request submitted');
-                            let datas = {}
-                            for (let i = 0; i < this.cart.length; i++) {
-                                const item = this.cart[i].courses;
-                                if (!datas[`${item["_id"]}`]) {
-                                    datas[`${item["_id"]}`] = {
-                                        "noOfSpaces":1,
-                                        "item":item
-                                    }
-                                }else{
-                                    datas[`${item["_id"]}`]["noOfSpaces"]++
-                                }
-                            }
-
-                            const keys = Object.keys(datas)
-                            const values = Object.values(datas)
-                            fetch(`http://localhost:3000/collection/orders`,{
-                                method:'POST',
-                                headers: {
-                                    'Content-Type': 'application/json'
-                                },
-                                body: JSON.stringify({
-                                    "name":this.name,
-                                    "phone":this.phone,
-                                })
-                            })
-                            .then(result => result.json())
-                            .then(result =>{
-                                if (result.length == 1) {
-                                    fetch(`http://localhost:3000/collection/orders/${result[0]["_id"]}`,{
-                                        method:'PUT',
-                                        headers: {
-                                            'Content-Type': 'application/json'
-                                        },
-                                        body: JSON.stringify({"items":values})
-                                    }).then(result => result.json())
-                                    .then(result => {
-                                        for (let i = 0; i < keys.length; i++) {
-                                            const key = keys[i];
-                                            const value = values[i];
-                                            fetch(`http://localhost:3000/collection/courses/${key}`,{
-                                                method:'PUT',
-                                                headers: {
-                                                    'Content-Type': 'application/json'
-                                                },
-                                                body: JSON.stringify({"noOfSpaces":value["item"].noOfSpaces})
-                                            })
-                                        }
-                                        this.cart = []
-                                    })
-                                }
-                            }).catch(err =>{
-                                console.log(err);
-                            });
-                         },
-           
-                         sortPrice: function(priceArray){
-                        function compare(a,b) {
-                            if (a.price > b.price)
-                                return 1;
-                            if (a.price < b.price)
-                                return -1;
-                            return 0;
+                alert('Request submitted');
+                let data = {}
+                for (let i = 0; i < this.cart.length; i++) {
+                    const item = this.cart[i].courses;
+                    if (!data[`${item["_id"]}`]) {
+                        data[`${item["_id"]}`] = {
+                            "noOfSpaces":1,
+                            "item":item
                         }
-                        return priceArray.sort(compare);
+                    }else{
+                        data[`${item["_id"]}`]["noOfSpaces"]++
+                    }
+                }
+                console.log(data);
+
+                const keys = Object.keys(data)
+                const values = Object.values(data)
+                fetch(`http://localhost:3000/collection/orders`,{
+                    method:'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
                     },
+                    body: JSON.stringify({
+                        "name":this.name,
+                        "phone":this.phone,
+                    })
+                })
+                .then(result => result.json())
+                .then(result =>{
+                    if (result.length == 1) {
+                        fetch(`http://localhost:3000/collection/orders/${result[0]["_id"]}`,{
+                            method:'PUT',
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({"items":values})
+                        }).then(result => result.json())
+                        .then(result => {
+                            for (let i = 0; i < keys.length; i++) {
+                                const key = keys[i];
+                                const value = values[i];
+                                fetch(`http://localhost:3000/collection/courses/${key}`,{
+                                    method:'PUT',
+                                    headers: {
+                                        'Content-Type': 'application/json'
+                                    },
+                                    body: JSON.stringify({"noOfSpaces":value["item"].noOfSpaces})
+                                })
+                            }
+                            this.cart = []
+                        })
+                    }
+                }).catch(err =>{
+                    console.log(err);
+                });
+                },
+           
+                sortPrice: function(priceArray){
+                    function compare(a,b) {
+                        if (a.price > b.price)
+                            return 1;
+                        if (a.price < b.price)
+                            return -1;
+                        return 0;
+                    }
+                    return priceArray.sort(compare);
+                },
 
                     sortLocation: function(locationArray){
                         function compare(a,b) {
